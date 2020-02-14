@@ -16,4 +16,9 @@ extension DocumentSnapshotExtensions on DocumentSnapshot {
 extension FirestoreDocumentExtensions on FirestoreDocument {
   Map<String, dynamic> toData(Serializers serializers, Serializer serializer) =>
       serializers.serializeWith(serializer, this);
+
+  Map<String, dynamic> serialize<T>(
+      Serializers serializers, Serializer serializer) {
+    return serializers.serializeWith(serializer, this);
+  }
 }

@@ -2,6 +2,8 @@ library firestore_bloc;
 
 import 'package:built_value/serializer.dart';
 
+export 'src/firestore_document.dart';
+export 'src/extensions/firestore_extensions.dart';
 export 'src/firestore_collection_bloc/bloc.dart';
 export 'src/firestore_document_bloc/bloc.dart';
 export 'src/repositories/firestore_collection_repository.dart';

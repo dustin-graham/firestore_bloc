@@ -13,10 +13,3 @@ abstract class FirestoreDocument {
 
   FirestoreDocumentBuilder toBuilder();
 }
-
-extension FirestoreDocumentExtensions on FirestoreDocument {
-  Map<String, dynamic> serialize<T>(
-      Serializers serializers, Serializer serializer) {
-    return serializers.serializeWith(serializer, this);
-  }
-}
