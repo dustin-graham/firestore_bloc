@@ -1,12 +1,10 @@
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firestore_bloc/firestore_bloc.dart';
 import 'package:quiver/strings.dart';
 
+import '../../firestore_bloc.dart';
 import '../extensions/firestore_extensions.dart';
-import '../firestore_document.dart';
 import 'basic_document_repository.dart';
-import 'firestore_document_repository.dart';
 import 'firestore_query_repository.dart';
 
 abstract class FirestoreCollectionRepository<T extends FirestoreDocument>
@@ -15,10 +13,6 @@ abstract class FirestoreCollectionRepository<T extends FirestoreDocument>
   CollectionReference get collectionRef;
 
   Serializer<T> get serializer;
-
-  T deserializeSnapshot(DocumentSnapshot snapshot) {
-    return snapshot.convert(FirestoreBloc.instance.serializers, serializer);
-  }
 
   Future<T> add(T t) async {
     try {
@@ -45,7 +39,13 @@ abstract class FirestoreCollectionRepository<T extends FirestoreDocument>
     return collectionRef.document(id).delete();
   }
 
-  FirestoreDocumentRepository getDocumentRepository(String documentId) {
-    return BasicDocumentRepository(collectionRef, documentId, serializer);
+  FirestoreDocumentRepository getDocumentRepositoryWithDocumentId(
+      String documentId) {
+    return BasicDocumentRepository.fromPath(
+        collectionRef, documentId, serializer);
+  }
+
+  Stream<List<T>> listAll() {
+    return streamQuery(collectionRef);
   }
 }

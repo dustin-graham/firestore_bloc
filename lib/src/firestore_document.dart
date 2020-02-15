@@ -9,6 +9,9 @@ abstract class FirestoreDocument {
   @BuiltValueField()
   String get id;
 
+  @nullable
+  String get referencePath;
+
   FirestoreDocument rebuild(void Function(FirestoreDocumentBuilder) updates);
 
   FirestoreDocumentBuilder toBuilder();

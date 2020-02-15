@@ -1,13 +1,16 @@
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firestore_bloc/firestore_bloc.dart';
 
 import '../firestore_document.dart';
 
 extension DocumentSnapshotExtensions on DocumentSnapshot {
-  T convert<T>(Serializers serializers, Serializer<T> serializer) {
+  T convert<T>(Serializer<T> serializer) {
     if (exists) {
       data['id'] = documentID;
-      return serializers.deserializeWith(serializer, data);
+      data['referencePath'] = this.reference.path;
+      return FirestoreBloc.instance.serializers
+          .deserializeWith(serializer, data);
     }
     return null;
   }

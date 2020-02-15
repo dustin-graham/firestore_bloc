@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../firestore_bloc.dart';
 import '../extensions/firestore_extensions.dart';
-import '../firestore_document.dart';
 
 abstract class FirestoreDocumentRepository<T extends FirestoreDocument> {
   DocumentReference get documentReference;
@@ -13,7 +12,7 @@ abstract class FirestoreDocumentRepository<T extends FirestoreDocument> {
   firestore_document_repository.Serializer<T> get serializer;
 
   T deserializeSnapshot(DocumentSnapshot snapshot) {
-    return snapshot.convert(FirestoreBloc.instance.serializers, serializer);
+    return snapshot.convert(serializer);
   }
 
   /// some repos may have things that need to get cleaned up once they are no
@@ -36,8 +35,8 @@ abstract class FirestoreDocumentRepository<T extends FirestoreDocument> {
   }
 
   Future<void> update(T document) async {
-    await documentReference
-        .setData(FirestoreBloc.instance.serializers.serializeWith(serializer, document));
+    await documentReference.setData(
+        FirestoreBloc.instance.serializers.serializeWith(serializer, document));
   }
 
   Future<void> delete() {
