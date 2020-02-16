@@ -1,36 +1,37 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:firestore_bloc/src/repositories/firestore_path.dart';
+import 'package:firestore_bloc/src/repositories/firestore_repository.dart';
 
 import '../../firestore_bloc.dart';
 import '../firestore_document.dart';
-import '../repositories/firestore_document_repository.dart';
 import 'bloc.dart';
 
 class FirestoreDocumentBloc<T extends FirestoreDocument>
     extends Bloc<FirestoreDocumentEvent, FirestoreDocumentState<T>> {
-  final FirestoreCollectionRepository<T> collectionRepo;
+  final FirestoreRepository<T> collectionRepo;
   StreamSubscription _documentSubscription;
-  FirestoreDocumentRepository _repo;
-  String documentId;
+  FirestoreDocumentPath documentPath;
+  FirestoreCollectionPath parentCollectionPath;
 
-  FirestoreDocumentBloc(this.collectionRepo, {this.documentId});
+  FirestoreDocumentBloc(this.collectionRepo, this.parentCollectionPath,
+      {this.documentPath});
 
   @override
   Future<void> close() {
     _documentSubscription?.cancel();
-    _repo?.close();
     return super.close();
   }
 
   @override
-  FirestoreDocumentState<T> get initialState => uninitialized(documentId);
+  FirestoreDocumentState<T> get initialState => uninitialized(documentPath);
 
   @override
   Stream<FirestoreDocumentState<T>> mapEventToState(
       FirestoreDocumentEvent event) async* {
     if (event is FirestoreDocumentLoadRequestedEvent) {
-      yield loading(event.documentId);
+      yield loading(event.documentPath);
       return;
     }
     if (event is FirestoreDocumentUpdateRequestedEvent<T>) {
@@ -42,7 +43,7 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
       return;
     }
     if (event is FirestoreDocumentLoadFailedEvent) {
-      yield loadFailed(event.error, event.documentId);
+      yield loadFailed(event.error, event.documentPath);
       return;
     }
     if (event is FirestoreDocumentDeletedEvent) {
@@ -51,25 +52,26 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
     }
   }
 
-  void _subscribeToDocumentChanges(String documentId) {
+  void _subscribeToDocumentChanges(FirestoreDocumentPath path) {
     _documentSubscription?.cancel();
-    _documentSubscription = _repo.stream().listen(
+    _documentSubscription = collectionRepo.documentSnapshots(path).listen(
       (document) {
         if (document != null) {
           add(FirestoreDocumentLoadedEvent<T>(document));
         } else {
           add(FirestoreDocumentLoadFailedEvent(
-              "document not found", documentId));
+              "document not found", documentPath));
         }
       },
-      onError: (e) => add(FirestoreDocumentLoadFailedEvent(e, documentId)),
+      onError: (e) => add(FirestoreDocumentLoadFailedEvent(e, documentPath)),
     );
   }
 
-  FirestoreDocumentUninitializedState<T> uninitialized(String documentId) =>
+  FirestoreDocumentUninitializedState<T> uninitialized(
+          FirestoreDocumentPath documentId) =>
       FirestoreDocumentUninitializedState(documentId);
 
-  FirestoreDocumentLoadingState<T> loading(String documentId) =>
+  FirestoreDocumentLoadingState<T> loading(FirestoreDocumentPath documentId) =>
       FirestoreDocumentLoadingState(documentId);
 
   FirestoreDocumentUpdatingState<T> updating(T document) =>
@@ -79,23 +81,23 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
       FirestoreDocumentLoadedState<T>(document);
 
   FirestoreDocumentLoadFailedState<T> loadFailed(
-          Object error, String documentId) =>
+          Object error, FirestoreDocumentPath documentId) =>
       FirestoreDocumentLoadFailedState(error, documentId);
 
   FirestoreDocumentDeletedState<T> deleted() => FirestoreDocumentDeletedState();
 
-  void load(String documentId) {
-    assert(this.documentId == null || this.documentId == documentId);
-    this.documentId = documentId;
-    _repo = collectionRepo.getDocumentRepository(documentId);
-    add(FirestoreDocumentLoadRequestedEvent(documentId));
-    _subscribeToDocumentChanges(documentId);
+  void load(FirestoreDocumentPath path) {
+    assert(this.documentPath == null || this.documentPath == documentPath);
+    this.documentPath = documentPath;
+    add(FirestoreDocumentLoadRequestedEvent(documentPath));
+    _subscribeToDocumentChanges(path);
   }
 
   Future<T> create(T document) async {
     try {
-      T createdDocument = await collectionRepo.add(document);
-      load(createdDocument.id);
+      T createdDocument =
+          await collectionRepo.addDocument(parentCollectionPath, document);
+      load(FirestoreDocumentPath.parse(createdDocument.referencePath));
       return createdDocument;
     } catch (e) {
       print('error creating document: $e');
@@ -106,32 +108,32 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
   Future<void> update(T document) async {
     assert(state is FirestoreDocumentLoadedState<T>,
         'tried to update document while not currently loaded');
-    final FirestoreDocumentLoadedState<T> loadedState = state;
-    assert(document.id == documentId, "updated document doesn't match");
+    assert(document.path == documentPath, "updated document doesn't match");
     try {
       _documentSubscription?.cancel(); // prevent updates until we're done
       add(FirestoreDocumentUpdateRequestedEvent(document));
-      await _repo.update(document);
+      await collectionRepo.updateDocument(document);
     } catch (e) {
       rethrow;
     } finally {
       // always reconnect to the repo
-      _subscribeToDocumentChanges(documentId);
+      _subscribeToDocumentChanges(
+          FirestoreDocumentPath.parse(document.referencePath));
     }
   }
 
-  Future<void> delete() async {
+  Future<void> delete(FirestoreDocumentPath path) async {
     assert(state is FirestoreDocumentLoadedState<T>,
         'tried to update document while not currently loaded');
     final FirestoreDocumentLoadedState<T> loadedState = state;
     try {
       _documentSubscription?.cancel();
       add(FirestoreDocumentDeleteRequestedEvent(loadedState.document));
-      await _repo.delete();
+      await collectionRepo.deleteDocument(path);
       add(FirestoreDocumentDeletedEvent());
     } catch (e) {
       // reconnect to the document changes on error
-      _subscribeToDocumentChanges(loadedState.document.id);
+      _subscribeToDocumentChanges(loadedState.document.path);
       rethrow;
     }
   }

@@ -7,7 +7,7 @@ import '../../firestore_bloc.dart';
 typedef StreamLoader<T extends FirestoreDocument> = Stream<List<T>> Function();
 
 abstract class FirestoreQueryBloc<T extends FirestoreDocument,
-        R extends FirestoreQueryRepository<T>>
+        R extends FirestoreRepository<T>>
     extends Bloc<FirestoreQueryEvent, FirestoreQueryState> {
   final R collectionRepo;
   StreamSubscription _streamSubscription;

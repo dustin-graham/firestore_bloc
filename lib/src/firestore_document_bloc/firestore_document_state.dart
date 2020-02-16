@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:quiver/strings.dart';
+import 'package:firestore_bloc/src/repositories/firestore_path.dart';
 
 import '../firestore_document.dart';
 
@@ -7,7 +7,7 @@ abstract class FirestoreDocumentState<T extends FirestoreDocument>
     extends Equatable {
   /// nullable, this is an indicator whether or not we will be observing a
   /// document that already exists or not
-  String get documentId => null;
+  FirestoreDocumentPath get documentId => null;
 
   @override
   List<Object> get props => [];
@@ -18,12 +18,12 @@ abstract class FirestoreDocumentState<T extends FirestoreDocument>
 class FirestoreDocumentUninitializedState<T extends FirestoreDocument>
     extends FirestoreDocumentState<T> {
   @override
-  final String documentId;
+  final FirestoreDocumentPath documentId;
 
   FirestoreDocumentUninitializedState(this.documentId);
 
   @override
-  bool get isCreationState => isBlank(documentId);
+  bool get isCreationState => documentId == null;
 }
 
 class FirestoreDocumentCreationFailedState<T extends FirestoreDocument>
@@ -39,7 +39,7 @@ class FirestoreDocumentCreationFailedState<T extends FirestoreDocument>
 abstract class FirestoreDocumentBlocInitializedState<
     T extends FirestoreDocument> extends FirestoreDocumentState<T> {
   @override
-  final String documentId;
+  final FirestoreDocumentPath documentId;
 
   FirestoreDocumentBlocInitializedState(this.documentId);
 
@@ -49,14 +49,14 @@ abstract class FirestoreDocumentBlocInitializedState<
 
 class FirestoreDocumentLoadingState<T extends FirestoreDocument>
     extends FirestoreDocumentBlocInitializedState<T> {
-  FirestoreDocumentLoadingState(String documentId) : super(documentId);
+  FirestoreDocumentLoadingState(FirestoreDocumentPath documentId) : super(documentId);
 }
 
 class FirestoreDocumentLoadFailedState<T extends FirestoreDocument>
     extends FirestoreDocumentBlocInitializedState<T> {
   final Object error;
 
-  FirestoreDocumentLoadFailedState(this.error, String documentId)
+  FirestoreDocumentLoadFailedState(this.error, FirestoreDocumentPath documentId)
       : super(documentId);
 
   @override
@@ -74,7 +74,7 @@ class FirestoreDocumentLoadedState<T extends FirestoreDocument>
 
   FirestoreDocumentLoadedState(this.document)
       : assert(document != null),
-        super(document.id);
+        super(document.path);
 
   @override
   List<Object> get props => super.props..addAll([document]);

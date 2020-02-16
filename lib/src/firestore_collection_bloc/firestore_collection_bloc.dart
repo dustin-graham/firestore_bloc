@@ -1,22 +1,22 @@
 import 'dart:async';
 
-
 import '../../firestore_bloc.dart';
-import '../repositories/firestore_collection_repository.dart';
 
 typedef CustomStreamLoader<T extends FirestoreDocument> = Stream<List<T>>
     Function();
 
 abstract class FirestoreCollectionBloc<T extends FirestoreDocument,
-        R extends FirestoreCollectionRepository<T>>
-    extends FirestoreQueryBloc<T, R> {
+    R extends FirestoreRepository<T>> extends FirestoreQueryBloc<T, R> {
   final R collectionRepo;
+  final FirestoreCollectionPath collectionPath;
 
-  FirestoreCollectionBloc(this.collectionRepo) : super(collectionRepo);
+  FirestoreCollectionBloc(this.collectionRepo, this.collectionPath)
+      : super(collectionRepo);
 
   Future<T> addDocument(T document) async {
     try {
-      T addedDocument = await collectionRepo.add(document);
+      T addedDocument =
+          await collectionRepo.addDocument(collectionPath, document);
       return addedDocument;
     } catch (e) {
       print('error adding document: $e');
@@ -26,7 +26,7 @@ abstract class FirestoreCollectionBloc<T extends FirestoreDocument,
 
   Future<void> deleteDocument(String documentId) async {
     try {
-      await collectionRepo.delete(documentId);
+      await collectionRepo.deleteDocument(collectionPath.document(documentId));
     } catch (e) {
       print('error deleting document: $e');
       rethrow;
@@ -34,6 +34,6 @@ abstract class FirestoreCollectionBloc<T extends FirestoreDocument,
   }
 
   void loadAll() {
-    super.load(() => collectionRepo.listAll());
+    super.load(() => collectionRepo.queryAll(collectionPath));
   }
 }

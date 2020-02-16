@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:firestore_bloc/src/repositories/firestore_path.dart';
 
 import '../firestore_document.dart';
 
@@ -10,9 +11,9 @@ abstract class FirestoreDocumentEvent extends Equatable {
 }
 
 class FirestoreDocumentLoadRequestedEvent extends FirestoreDocumentEvent {
-  final String documentId;
+  final FirestoreDocumentPath documentPath;
 
-  FirestoreDocumentLoadRequestedEvent(this.documentId);
+  FirestoreDocumentLoadRequestedEvent(this.documentPath);
 }
 
 class FirestoreDocumentLoadedEvent<T extends FirestoreDocument>
@@ -38,10 +39,10 @@ class FirestoreDocumentDeleteRequestedEvent<T extends FirestoreDocument>
 class FirestoreDocumentDeletedEvent extends FirestoreDocumentEvent {}
 
 class FirestoreDocumentLoadFailedEvent extends FirestoreDocumentEvent {
-  final String documentId;
+  final FirestoreDocumentPath documentPath;
   final Object error;
 
-  FirestoreDocumentLoadFailedEvent(this.error, this.documentId);
+  FirestoreDocumentLoadFailedEvent(this.error, this.documentPath);
 
   @override
   List<Object> get props => super.props..addAll([error]);
