@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:firestore_doc/firestore_doc.dart';
 
 import '../../firestore_bloc.dart';
 

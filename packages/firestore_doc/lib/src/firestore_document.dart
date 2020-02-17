@@ -1,6 +1,6 @@
 import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:firestore_bloc/src/repositories/firestore_path.dart';
+
+import 'firestore_path.dart';
 
 part 'firestore_document.g.dart';
 

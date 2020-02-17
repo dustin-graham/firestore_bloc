@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:firestore_bloc/src/repositories/firestore_path.dart';
 import 'package:firestore_bloc/src/repositories/firestore_repository.dart';
+import 'package:firestore_doc/firestore_doc.dart';
 
 import '../../firestore_bloc.dart';
-import '../firestore_document.dart';
 import 'bloc.dart';
 
 class FirestoreDocumentBloc<T extends FirestoreDocument>

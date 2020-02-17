@@ -1,9 +1,9 @@
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_bloc/firestore_bloc.dart';
+import 'package:firestore_doc/firestore_doc.dart';
 
 import '../firestore_bloc_config.dart';
-import '../firestore_document.dart';
 
 extension DocumentSnapshotExtensions on DocumentSnapshot {
   T convert<T>(Serializer<T> serializer) {

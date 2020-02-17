@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firestore_doc/firestore_doc.dart';
+
 import '../../firestore_bloc.dart';
 
 typedef CustomStreamLoader<T extends FirestoreDocument> = Stream<List<T>>

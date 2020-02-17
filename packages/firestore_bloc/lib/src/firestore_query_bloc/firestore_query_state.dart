@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:firestore_doc/firestore_doc.dart';
 
 import '../../firestore_bloc.dart';
 

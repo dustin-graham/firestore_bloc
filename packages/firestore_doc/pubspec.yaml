@@ -1,23 +1,17 @@
-name: firestore_bloc
-description: A simple and fun way to work with Firestore with Bloc on Flutter
+name: firestore_doc
+description: A new Flutter package project.
 version: 0.0.1
 author:
 homepage:
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore: ^0.13.0+1
-  bloc: ^3.0.0
-  equatable: ^1.0.2
   built_collection: ^4.3.2
   built_value: ^7.0.8
-  rxdart: ^0.23.1
-  quiver: ^2.0.5
-  collection: ^1.14.11
 
 dev_dependencies:
   flutter_test:

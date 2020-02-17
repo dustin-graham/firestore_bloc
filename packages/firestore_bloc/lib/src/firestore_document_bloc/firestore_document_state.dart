@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:firestore_bloc/src/repositories/firestore_path.dart';
-
-import '../firestore_document.dart';
+import 'package:firestore_doc/firestore_doc.dart';
 
 abstract class FirestoreDocumentState<T extends FirestoreDocument>
     extends Equatable {
