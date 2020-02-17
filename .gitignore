@@ -3,3 +3,7 @@
 *.ipr
 *.iws
 .idea/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.dart_tool
