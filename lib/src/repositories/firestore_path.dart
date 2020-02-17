@@ -7,6 +7,10 @@ abstract class FirestorePath {
 
   String get path => _path.join('/');
 
+  List<String> _copyPath() {
+    return List.of(_path);
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -16,6 +20,11 @@ abstract class FirestorePath {
 
   @override
   int get hashCode => ListEquality().hash(_path);
+
+  @override
+  String toString() {
+    return 'FirestorePath{_path: $_path}';
+  }
 }
 
 class FirestoreCollectionPath extends FirestorePath {
@@ -28,13 +37,13 @@ class FirestoreCollectionPath extends FirestorePath {
 
   FirestoreDocumentPath get parentDocument {
     if (_path.length >= 3) {
-      return FirestoreDocumentPath(_path..removeLast());
+      return FirestoreDocumentPath(_copyPath()..removeLast());
     }
     return null;
   }
 
   FirestoreDocumentPath document(String id) {
-    return FirestoreDocumentPath(_path..add(id));
+    return FirestoreDocumentPath(_copyPath()..add(id));
   }
 }
 
@@ -49,10 +58,10 @@ class FirestoreDocumentPath extends FirestorePath {
   FirestoreDocumentPath.parse(String path) : this(path.split('/'));
 
   FirestoreCollectionPath get parentCollection {
-    return FirestoreCollectionPath(_path..removeLast());
+    return FirestoreCollectionPath(_copyPath()..removeLast());
   }
 
   FirestoreCollectionPath collection(String collectionKey) {
-    return FirestoreCollectionPath(_path..add(collectionKey));
+    return FirestoreCollectionPath(_copyPath()..add(collectionKey));
   }
 }

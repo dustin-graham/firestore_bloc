@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_bloc/src/exceptions/firestore_exceptions.dart';
 import '../extensions/firestore_extensions.dart';
 import 'package:quiver/strings.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../firestore_bloc_config.dart';
 import '../firestore_document.dart';
@@ -27,12 +28,15 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
     final mapSnapshots = (QuerySnapshot snapshot) {
       return snapshot.documents
           .where((documentSnapshot) =>
-      documentSnapshot.data != null &&
-          documentIsValid(documentSnapshot.data))
+              documentSnapshot.data != null &&
+              documentIsValid(documentSnapshot.data))
           .map<T>(deserializeSnapshot)
           .toList();
     };
-    return query.snapshots().map(mapSnapshots);
+    final singleFetchStream =
+        Stream.fromFuture(query.getDocuments(source: Source.server));
+    final snapshotsStream = query.snapshots();
+    return MergeStream([singleFetchStream, snapshotsStream]).map(mapSnapshots);
   }
 
   Future<T> querySingle(Query query) {
