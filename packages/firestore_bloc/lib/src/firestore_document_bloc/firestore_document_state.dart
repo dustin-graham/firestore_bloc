@@ -21,7 +21,7 @@ class FirestoreDocumentUninitializedState<T extends FirestoreDocument>
   FirestoreDocumentUninitializedState(this.documentPath);
 
   @override
-  bool get isCreationState => documentPath == null;
+  bool get isCreationState => documentPath.documentId == null;
 }
 
 class FirestoreDocumentCreationFailedState<T extends FirestoreDocument>
