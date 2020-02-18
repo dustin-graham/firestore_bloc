@@ -5,7 +5,7 @@ abstract class FirestoreDocumentState<T extends FirestoreDocument>
     extends Equatable {
   /// nullable, this is an indicator whether or not we will be observing a
   /// document that already exists or not
-  FirestoreDocumentPath get documentId => null;
+  FirestoreDocumentPath get documentPath => null;
 
   @override
   List<Object> get props => [];
@@ -16,12 +16,12 @@ abstract class FirestoreDocumentState<T extends FirestoreDocument>
 class FirestoreDocumentUninitializedState<T extends FirestoreDocument>
     extends FirestoreDocumentState<T> {
   @override
-  final FirestoreDocumentPath documentId;
+  final FirestoreDocumentPath documentPath;
 
-  FirestoreDocumentUninitializedState(this.documentId);
+  FirestoreDocumentUninitializedState(this.documentPath);
 
   @override
-  bool get isCreationState => documentId == null;
+  bool get isCreationState => documentPath == null;
 }
 
 class FirestoreDocumentCreationFailedState<T extends FirestoreDocument>
@@ -37,12 +37,12 @@ class FirestoreDocumentCreationFailedState<T extends FirestoreDocument>
 abstract class FirestoreDocumentBlocInitializedState<
     T extends FirestoreDocument> extends FirestoreDocumentState<T> {
   @override
-  final FirestoreDocumentPath documentId;
+  final FirestoreDocumentPath documentPath;
 
-  FirestoreDocumentBlocInitializedState(this.documentId);
+  FirestoreDocumentBlocInitializedState(this.documentPath);
 
   @override
-  List<Object> get props => super.props..add(documentId);
+  List<Object> get props => super.props..add(documentPath);
 }
 
 class FirestoreDocumentLoadingState<T extends FirestoreDocument>

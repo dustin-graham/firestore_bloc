@@ -85,18 +85,18 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
 
   FirestoreDocumentDeletedState<T> deleted() => FirestoreDocumentDeletedState();
 
-  void load(FirestoreDocumentPath path) {
-    assert(this.documentPath == null || this.documentPath == documentPath);
-    this.documentPath = documentPath;
+  void load() {
+    assert(documentPath != null);
     add(FirestoreDocumentLoadRequestedEvent(documentPath));
-    _subscribeToDocumentChanges(path);
+    _subscribeToDocumentChanges(documentPath);
   }
 
   Future<T> create(T document) async {
     try {
       T createdDocument =
           await collectionRepo.addDocument(parentCollectionPath, document);
-      load(FirestoreDocumentPath.parse(createdDocument.referencePath));
+      documentPath = FirestoreDocumentPath.parse(createdDocument.referencePath);
+      load();
       return createdDocument;
     } catch (e) {
       print('error creating document: $e');
@@ -121,14 +121,15 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
     }
   }
 
-  Future<void> delete(FirestoreDocumentPath path) async {
+  Future<void> delete() async {
+    assert(documentPath != null);
     assert(state is FirestoreDocumentLoadedState<T>,
         'tried to update document while not currently loaded');
     final FirestoreDocumentLoadedState<T> loadedState = state;
     try {
       _documentSubscription?.cancel();
       add(FirestoreDocumentDeleteRequestedEvent(loadedState.document));
-      await collectionRepo.deleteDocument(path);
+      await collectionRepo.deleteDocument(documentPath);
       add(FirestoreDocumentDeletedEvent());
     } catch (e) {
       // reconnect to the document changes on error
