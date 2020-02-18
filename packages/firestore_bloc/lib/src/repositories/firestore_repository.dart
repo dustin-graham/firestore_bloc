@@ -2,10 +2,10 @@ import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_bloc/src/exceptions/firestore_exceptions.dart';
 import 'package:firestore_doc/firestore_doc.dart';
-import '../extensions/firestore_extensions.dart';
 import 'package:quiver/strings.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../extensions/firestore_extensions.dart';
 import '../firestore_bloc_config.dart';
 
 abstract class FirestoreRepository<T extends FirestoreDocument> {
