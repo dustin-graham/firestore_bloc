@@ -91,7 +91,7 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
       return deserializeSnapshot(docSnapshot);
     } catch (e) {
       print(e);
-      return null;
+      rethrow;
     }
   }
 }
