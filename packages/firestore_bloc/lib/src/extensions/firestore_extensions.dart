@@ -11,7 +11,7 @@ extension DocumentSnapshotExtensions on DocumentSnapshot {
       final dataMap = Map<String,dynamic>.of(this.data);
       dataMap['id'] = documentID;
       dataMap['referencePath'] = this.reference.path;
-      return FirestoreBloc.instance.serializers
+      return FirestoreBlocConfig.instance.serializers
           .deserializeWith(serializer, dataMap);
     }
     return null;
