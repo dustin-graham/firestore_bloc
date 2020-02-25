@@ -71,7 +71,7 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
           'tried to update document without a reference');
     }
     await Firestore.instance.document(document.referencePath).setData(
-        FirestoreBloc.instance.serializers.serializeWith(serializer, document));
+        FirestoreBlocConfig.instance.serializers.serializeWith(serializer, document));
   }
 
   Future<void> deleteDocument(FirestoreDocumentPath path) {
@@ -82,11 +82,11 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
     try {
       if (isNotEmpty(t.id)) {
         await collectionPath.document(t.id).documentReference.setData(
-            FirestoreBloc.instance.serializers.serializeWith(serializer, t));
+            FirestoreBlocConfig.instance.serializers.serializeWith(serializer, t));
         return t;
       }
       var docRef = await collectionPath.collectionReference
-          .add(FirestoreBloc.instance.serializers.serializeWith(serializer, t));
+          .add(FirestoreBlocConfig.instance.serializers.serializeWith(serializer, t));
       var docSnapshot = await docRef.get();
       return deserializeSnapshot(docSnapshot);
     } catch (e) {

@@ -1,9 +1,9 @@
 import 'package:built_value/serializer.dart';
 
-class FirestoreBloc {
-  FirestoreBloc();
+class FirestoreBlocConfig {
+  FirestoreBlocConfig._();
 
-  static final FirestoreBloc instance = FirestoreBloc();
+  static final FirestoreBlocConfig instance = FirestoreBlocConfig._();
 
   Serializers _serializers;
 
