@@ -20,12 +20,17 @@ class FirestoreDocumentPlugin extends SerializerPlugin {
       try {
         var elements = List.of(object);
         final idIndex = elements.indexOf('id');
-        elements.removeRange(idIndex, idIndex + 2);
+        if (idIndex >= 0) {
+          elements.removeRange(idIndex, idIndex + 2);
+        }
         final referencePathIndex = elements.indexOf('referencePath');
-        elements.removeRange(referencePathIndex, referencePathIndex + 2);
+        if (referencePathIndex >= 0) {
+          elements.removeRange(referencePathIndex, referencePathIndex + 2);
+        }
         return elements;
-      } catch (_) {
-        return object;
+      } catch (e) {
+        print(
+            'error stripping out firestore document metadat on ${specifiedType.root}, e: $e');
       }
     }
     return object;
