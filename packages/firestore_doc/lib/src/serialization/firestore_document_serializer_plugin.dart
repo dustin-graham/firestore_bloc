@@ -1,9 +1,9 @@
 import 'package:built_value/serializer.dart';
 
-/// Erase the "id" property of [FirestoreDocument] so that it doesn't get written
-/// into the actual firebase documents. these identifiers are generated and maintained
-/// by firebase and we map them into the [FirestoreDocument.id] field for convenience
-/// we don't want to send these values back over the wire when we make updates
+/// Erase the "referencePath" property of [FirestoreDocument] so that it doesn't get written
+/// into the actual firebase documents. This path generated and maintained
+/// by firebase and we map it into the [FirestoreDocument.referencePath] field for convenience
+/// we don't want to send this value back over the wire when we make updates
 class FirestoreDocumentPlugin extends SerializerPlugin {
   final List<Type> documentTypes;
 
@@ -19,10 +19,6 @@ class FirestoreDocumentPlugin extends SerializerPlugin {
     if (documentTypes.contains(specifiedType.root)) {
       try {
         var elements = List.of(object);
-        final idIndex = elements.indexOf('id');
-        if (idIndex >= 0) {
-          elements.removeRange(idIndex, idIndex + 2);
-        }
         final referencePathIndex = elements.indexOf('referencePath');
         if (referencePathIndex >= 0) {
           elements.removeRange(referencePathIndex, referencePathIndex + 2);
