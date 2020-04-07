@@ -94,7 +94,7 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
     try {
       var existingDocumentId = safeDocumentId(t);
       if (existingDocumentId != null) {
-        await collectionPath.document(t.id).documentReference.setData(
+        await collectionPath.document(existingDocumentId).documentReference.setData(
             FirestoreBlocConfig.instance.serializers
                 .serializeWith(serializer, t));
         return t;
