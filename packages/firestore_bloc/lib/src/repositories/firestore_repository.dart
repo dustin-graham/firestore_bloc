@@ -8,7 +8,12 @@ import 'package:rxdart/rxdart.dart';
 import '../extensions/firestore_extensions.dart';
 import '../firestore_bloc_config.dart';
 
+typedef DocumentIdGenerator = String Function();
+
 abstract class FirestoreRepository<T extends FirestoreDocument> {
+  /// Set this if you want a way to manually determine ahead of time the document ID going into the database
+  static DocumentIdGenerator documentIdGenerator;
+
   Serializer<T> get serializer;
 
   T deserializeSnapshot(DocumentSnapshot snapshot) {
@@ -71,22 +76,32 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
           'tried to update document without a reference');
     }
     await Firestore.instance.document(document.referencePath).setData(
-        FirestoreBlocConfig.instance.serializers.serializeWith(serializer, document));
+        FirestoreBlocConfig.instance.serializers
+            .serializeWith(serializer, document));
   }
 
   Future<void> deleteDocument(FirestoreDocumentPath path) {
     return path.documentReference.delete();
   }
 
+  static String safeDocumentId(FirestoreDocument document) {
+    return isNotEmpty(document.id)
+        ? document.id
+        : documentIdGenerator != null ? documentIdGenerator() : null;
+  }
+
   Future<T> addDocument(FirestoreCollectionPath collectionPath, T t) async {
     try {
-      if (isNotEmpty(t.id)) {
+      var existingDocumentId = safeDocumentId(t);
+      if (existingDocumentId != null) {
         await collectionPath.document(t.id).documentReference.setData(
-            FirestoreBlocConfig.instance.serializers.serializeWith(serializer, t));
+            FirestoreBlocConfig.instance.serializers
+                .serializeWith(serializer, t));
         return t;
       }
-      var docRef = await collectionPath.collectionReference
-          .add(FirestoreBlocConfig.instance.serializers.serializeWith(serializer, t));
+      var docRef = await collectionPath.collectionReference.add(
+          FirestoreBlocConfig.instance.serializers
+              .serializeWith(serializer, t));
       var docSnapshot = await docRef.get();
       return deserializeSnapshot(docSnapshot);
     } catch (e) {
