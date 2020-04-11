@@ -26,6 +26,15 @@ abstract class FirestoreCollectionBloc<T extends FirestoreDocument,
     }
   }
 
+  Future<void> updateDocument(T document) async {
+    try {
+      await collectionRepo.updateDocument(document);
+    } catch (e) {
+      print('error updating document: $e');
+      rethrow;
+    }
+  }
+
   Future<void> deleteDocument(String documentId) async {
     try {
       await collectionRepo.deleteDocument(collectionPath.document(documentId));
