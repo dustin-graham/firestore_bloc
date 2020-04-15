@@ -98,10 +98,13 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
         t = t.rebuild((b) {
           b.id = existingDocumentId;
         });
-        await collectionPath.document(existingDocumentId).documentReference.setData(
+        var referencePath = collectionPath.document(existingDocumentId);
+        await referencePath.documentReference.setData(
             FirestoreBlocConfig.instance.serializers
                 .serializeWith(serializer, t));
-        return t;
+        return t.rebuild((b) {
+          b.referencePath = referencePath.path;
+        });
       }
       var docRef = await collectionPath.collectionReference.add(
           FirestoreBlocConfig.instance.serializers
