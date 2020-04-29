@@ -19,6 +19,11 @@ class FirestoreQueryLoadFailedState extends FirestoreQueryState {
 
   @override
   List<Object> get props => super.props..addAll([error]);
+
+  @override
+  String toString() {
+    return 'FirestoreQueryLoadFailedState{error: $error}';
+  }
 }
 
 class FirestoreQueryLoadedState<T extends FirestoreDocument>
