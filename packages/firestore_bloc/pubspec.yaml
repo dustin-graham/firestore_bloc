@@ -19,7 +19,9 @@ dependencies:
   quiver: ^2.0.5
   collection: ^1.14.11
   firestore_doc:
-    path: ../firestore_doc
+    git:
+      url: git@github.com:dustin-graham/firestore_bloc.git
+      path: ./packages/firestore_doc
 
 dev_dependencies:
   flutter_test:
