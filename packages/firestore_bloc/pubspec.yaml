@@ -20,7 +20,7 @@ dependencies:
   collection: ^1.14.11
   firestore_doc:
     git:
-      url: git@github.com:dustin-graham/firestore_bloc.git
+      url: https://github.com/dustin-graham/firestore_bloc.git
       path: ./packages/firestore_doc
 
 dev_dependencies:
