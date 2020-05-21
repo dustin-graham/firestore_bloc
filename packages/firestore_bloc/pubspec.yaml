@@ -15,7 +15,7 @@ dependencies:
   equatable: ^1.0.2
   built_collection: ^4.3.2
   built_value: ^7.0.8
-  rxdart: ^0.24.0
+  rxdart: ^0.24.1
   quiver: ^2.0.5
   collection: ^1.14.11
   firestore_doc:
