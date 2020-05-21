@@ -14,6 +14,17 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
   /// Set this if you want a way to manually determine ahead of time the document ID going into the database
   static DocumentIdGenerator documentIdGenerator;
 
+  static Firestore _firestoreInstance;
+
+  /// set this if you have a custom firestore app you need to reference instead
+  /// of the default
+  static set firestoreInstance(Firestore instance) {
+    _firestoreInstance = instance;
+  }
+
+  static Firestore get firestoreInstance =>
+      _firestoreInstance ?? Firestore.instance;
+
   Serializer<T> get serializer;
 
   T deserializeSnapshot(DocumentSnapshot snapshot) {
@@ -75,8 +86,9 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
       throw NoDocumentReferenceException(
           'tried to update document without a reference');
     }
-    await Firestore.instance.document(document.referencePath).setData(
-        FirestoreBlocConfig.instance.serializers
+    await FirestoreRepository.firestoreInstance
+        .document(document.referencePath)
+        .setData(FirestoreBlocConfig.instance.serializers
             .serializeWith(serializer, document));
   }
 
@@ -99,9 +111,9 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
           b.id = existingDocumentId;
         });
         var referencePath = collectionPath.document(existingDocumentId);
-        await referencePath.documentReference.setData(
-            FirestoreBlocConfig.instance.serializers
-                .serializeWith(serializer, t));
+        await referencePath.documentReference.setData(FirestoreBlocConfig
+            .instance.serializers
+            .serializeWith(serializer, t));
         return t.rebuild((b) {
           b.referencePath = referencePath.path;
         });
@@ -120,12 +132,12 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
 
 extension FirestoreCollectionPathExtensions on FirestoreCollectionPath {
   CollectionReference get collectionReference {
-    return Firestore.instance.collection(path);
+    return FirestoreRepository.firestoreInstance.collection(path);
   }
 }
 
 extension FirestoreDocumentPathExtensions on FirestoreDocumentPath {
   DocumentReference get documentReference {
-    return Firestore.instance.document(path);
+    return FirestoreRepository.firestoreInstance.document(path);
   }
 }
