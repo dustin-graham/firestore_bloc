@@ -81,7 +81,7 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
     return (await getDocument(path)) != null;
   }
 
-  Future<void> updateDocument(T document) async {
+  Future<void> updateDocument(T document, {bool merge = false}) async {
     if (isBlank(document.referencePath)) {
       throw NoDocumentReferenceException(
           'tried to update document without a reference');
@@ -89,7 +89,7 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
     await FirestoreRepository.firestoreInstance
         .document(document.referencePath)
         .setData(FirestoreBlocConfig.instance.serializers
-            .serializeWith(serializer, document));
+            .serializeWith(serializer, document), merge: merge);
   }
 
   Future<void> deleteDocument(FirestoreDocumentPath path) {
