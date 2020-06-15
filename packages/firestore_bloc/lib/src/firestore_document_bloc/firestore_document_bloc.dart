@@ -104,14 +104,19 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
     }
   }
 
-  Future<void> update(T document, {bool merge = false}) async {
+  Future<void> update(T document,
+      {bool merge = false, T originalDocument}) async {
     assert(state is FirestoreDocumentLoadedState<T>,
         'tried to update document while not currently loaded');
     assert(document.path == documentPath, "updated document doesn't match");
     try {
       _documentSubscription?.cancel(); // prevent updates until we're done
       add(FirestoreDocumentUpdateRequestedEvent(document));
-      await collectionRepo.updateDocument(document, merge: merge);
+      await collectionRepo.updateDocument(
+        document,
+        merge: merge,
+        originalDocument: originalDocument,
+      );
     } catch (e) {
       rethrow;
     } finally {
