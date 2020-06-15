@@ -26,9 +26,9 @@ abstract class FirestoreCollectionBloc<T extends FirestoreDocument,
     }
   }
 
-  Future<void> updateDocument(T document) async {
+  Future<void> updateDocument(T document, {bool merge = false}) async {
     try {
-      await collectionRepo.updateDocument(document);
+      await collectionRepo.updateDocument(document, merge: merge);
     } catch (e) {
       print('error updating document: $e');
       rethrow;
