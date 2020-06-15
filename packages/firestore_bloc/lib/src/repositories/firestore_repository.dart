@@ -1,6 +1,7 @@
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firestore_bloc/src/exceptions/firestore_exceptions.dart';
+import 'package:firestore_bloc/src/utils/serializer_utils.dart';
 import 'package:firestore_doc/firestore_doc.dart';
 import 'package:quiver/strings.dart';
 import 'package:rxdart/rxdart.dart';
@@ -81,15 +82,33 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
     return (await getDocument(path)) != null;
   }
 
-  Future<void> updateDocument(T document, {bool merge = false}) async {
+  /// pass in an [originalDocument] if you would like this method to automatically
+  /// determine which fields have been removed so and pass in a [FieldValue.delete()]
+  Future<void> updateDocument(T document,
+      {bool merge = false, T originalDocument}) async {
     if (isBlank(document.referencePath)) {
       throw NoDocumentReferenceException(
           'tried to update document without a reference');
     }
-    await FirestoreRepository.firestoreInstance
-        .document(document.referencePath)
-        .setData(FirestoreBlocConfig.instance.serializers
-            .serializeWith(serializer, document), merge: merge);
+
+    var serializedDocument = FirestoreBlocConfig.instance.serializers
+        .serializeWith(serializer, document);
+    if (originalDocument != null) {
+      final originalSerializedDocument = FirestoreBlocConfig
+          .instance.serializers
+          .serializeWith(serializer, originalDocument);
+
+      final processedUpdate =
+          processMissingFields(serializedDocument, originalSerializedDocument);
+
+      await FirestoreRepository.firestoreInstance
+          .document(document.referencePath)
+          .setData(processedUpdate, merge: true);
+    } else {
+      await FirestoreRepository.firestoreInstance
+          .document(document.referencePath)
+          .setData(serializedDocument, merge: merge);
+    }
   }
 
   Future<void> deleteDocument(FirestoreDocumentPath path) {
