@@ -67,7 +67,10 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
   }
 
   Stream<T> documentSnapshots(FirestoreDocumentPath path) {
-    return path.documentReference.snapshots().map(deserializeSnapshot);
+    final singleFetchStream = Stream.fromFuture(path.documentReference.get());
+    final snapshotsStream = path.documentReference.snapshots();
+    return MergeStream([singleFetchStream, snapshotsStream])
+        .map(deserializeSnapshot);
   }
 
   Future<T> getDocument(FirestoreDocumentPath path) async {
