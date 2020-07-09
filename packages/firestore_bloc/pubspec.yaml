@@ -21,6 +21,7 @@ dependencies:
   firestore_doc:
     git:
       url: https://github.com/dustin-graham/firestore_bloc.git
+      ref: bloc_update
       path: ./packages/firestore_doc
 
 dev_dependencies:
