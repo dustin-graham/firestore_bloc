@@ -13,10 +13,8 @@ abstract class FirestoreQueryBloc<T extends FirestoreDocument,
   final R collectionRepo;
   StreamSubscription _streamSubscription;
 
-  FirestoreQueryBloc(this.collectionRepo);
-
-  @override
-  FirestoreQueryState get initialState => uninitialized();
+  FirestoreQueryBloc(this.collectionRepo, {FirestoreQueryState initialState})
+      : super(initialState ?? FirestoreQueryUninitializedState());
 
   @override
   Stream<FirestoreQueryState> mapEventToState(

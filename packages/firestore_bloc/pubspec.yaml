@@ -11,13 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_firestore: ^0.13.0+1
-  bloc: ^4.0.0
+  bloc: ^5.0.1
   equatable: ^1.0.2
   built_collection: ^4.3.2
   built_value: ^7.0.8
   rxdart: ^0.24.1
   quiver: ^2.0.5
-  collection: ^1.14.11
+  collection: ^1.14.12
   firestore_doc:
     git:
       url: https://github.com/dustin-graham/firestore_bloc.git

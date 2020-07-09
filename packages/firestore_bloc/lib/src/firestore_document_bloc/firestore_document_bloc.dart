@@ -15,16 +15,15 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
   FirestoreCollectionPath parentCollectionPath;
 
   FirestoreDocumentBloc(this.collectionRepo, this.parentCollectionPath,
-      {this.documentPath});
+      {this.documentPath, FirestoreDocumentState<T> initialState})
+      : super(
+            initialState ?? FirestoreDocumentUninitializedState(documentPath));
 
   @override
   Future<void> close() {
     _documentSubscription?.cancel();
     return super.close();
   }
-
-  @override
-  FirestoreDocumentState<T> get initialState => uninitialized(documentPath);
 
   @override
   Stream<FirestoreDocumentState<T>> mapEventToState(
