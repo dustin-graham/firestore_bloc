@@ -8,7 +8,7 @@ import 'package:firestore_doc/firestore_doc.dart';
 typedef StreamLoader<T extends FirestoreDocument> = Stream<List<T>> Function();
 
 abstract class FirestoreQueryCubit<T extends FirestoreDocument,
-R extends FirestoreRepository<T>> extends Cubit<FirestoreQueryState> {
+    R extends FirestoreRepository<T>> extends Cubit<FirestoreQueryState> {
   final R collectionRepo;
   StreamSubscription _streamSubscription;
 
@@ -27,10 +27,10 @@ R extends FirestoreRepository<T>> extends Cubit<FirestoreQueryState> {
   FirestoreQueryLoadingState loading() => FirestoreQueryLoadingState();
 
   FirestoreQueryLoadFailedState loadFailed(error) =>
-      FirestoreQueryState.loadFailed(error: error);
+      FirestoreQueryLoadFailedState(error);
 
   FirestoreQueryLoadedState<T> loaded(List<T> documents) =>
-      FirestoreQueryState.loaded(documents: documents);
+      FirestoreQueryLoadedState<T>(documents);
 
   void _subscribeToQuery(StreamLoader streamLoader) {
     Stream<List<T>> collectionStream = streamLoader?.call();

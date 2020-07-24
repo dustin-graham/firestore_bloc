@@ -1,19 +1,47 @@
+import 'package:equatable/equatable.dart';
 import 'package:firestore_doc/firestore_doc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'firestore_query_state.freezed.dart';
+abstract class FirestoreQueryState extends Equatable {
+  const FirestoreQueryState();
 
-@freezed
-abstract class FirestoreQueryState<T extends FirestoreDocument>
-    with _$FirestoreQueryState<T> {
-  const factory FirestoreQueryState.uninitialized() =
-      FirestoreQueryUninitializedState;
+  @override
+  List<Object> get props => [];
+}
 
-  const factory FirestoreQueryState.loading() = FirestoreQueryLoadingState;
+class FirestoreQueryUninitializedState extends FirestoreQueryState {}
 
-  const factory FirestoreQueryState.loaded({@required List<T> documents}) =
-      FirestoreQueryLoadedState<T>;
+class FirestoreQueryLoadingState extends FirestoreQueryState {}
 
-  const factory FirestoreQueryState.loadFailed({Object error}) =
-      FirestoreQueryLoadFailedState;
+class FirestoreQueryLoadFailedState extends FirestoreQueryState {
+  final Object error;
+
+  FirestoreQueryLoadFailedState(this.error);
+
+  @override
+  List<Object> get props => super.props..addAll([error]);
+
+  @override
+  String toString() {
+    return 'FirestoreQueryLoadFailedState{error: $error}';
+  }
+}
+
+class FirestoreQueryLoadedState<T extends FirestoreDocument>
+    extends FirestoreQueryState {
+  final List<T> documents;
+
+  FirestoreQueryLoadedState(this.documents);
+
+  @override
+  List<Object> get props => super.props..addAll([documents]);
+}
+
+class FirestoreQueryDocumentAddedState<T extends FirestoreDocument>
+    extends FirestoreQueryState {
+  final T document;
+
+  FirestoreQueryDocumentAddedState(this.document);
+
+  @override
+  List<Object> get props => super.props..addAll([document]);
 }

@@ -46,10 +46,10 @@ abstract class FirestoreQueryBloc<T extends FirestoreDocument,
   FirestoreQueryLoadingState loading() => FirestoreQueryLoadingState();
 
   FirestoreQueryLoadFailedState loadFailed(error) =>
-      FirestoreQueryState.loadFailed(error: error);
+      FirestoreQueryLoadFailedState(error);
 
   FirestoreQueryLoadedState<T> loaded(List<T> documents) =>
-      FirestoreQueryState.loaded(documents: documents);
+      FirestoreQueryLoadedState<T>(documents);
 
   Stream<FirestoreQueryState> _mapFirestoreQueryLoadFailedEventToState(
       FirestoreQueryLoadFailedEvent event) async* {
