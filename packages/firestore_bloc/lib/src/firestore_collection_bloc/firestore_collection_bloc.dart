@@ -4,9 +4,6 @@ import 'package:firestore_doc/firestore_doc.dart';
 
 import '../../firestore_bloc.dart';
 
-typedef CustomStreamLoader<T extends FirestoreDocument> = Stream<List<T>>
-    Function();
-
 abstract class FirestoreCollectionBloc<T extends FirestoreDocument,
     R extends FirestoreRepository<T>> extends FirestoreQueryBloc<T, R> {
   final R collectionRepo;

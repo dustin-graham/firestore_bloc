@@ -23,12 +23,14 @@ dependencies:
       url: https://github.com/dustin-graham/firestore_bloc.git
       ref: bloc_update
       path: ./packages/firestore_doc
+  freezed_annotation: ^0.11.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   built_value_generator: ^7.0.8
-  build_runner: ^1.7.3
+  freezed: ^0.11.4
+  build_runner: ^1.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

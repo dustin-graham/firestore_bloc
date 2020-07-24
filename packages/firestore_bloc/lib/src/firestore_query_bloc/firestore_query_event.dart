@@ -28,13 +28,3 @@ class FirestoreQueryLoadFailedEvent extends FirestoreQueryEvent {
   @override
   List<Object> get props => super.props..addAll([error]);
 }
-
-class FirestoreAddedDocumentEvent<T extends FirestoreDocument>
-    extends FirestoreQueryEvent {
-  final T document;
-
-  FirestoreAddedDocumentEvent(this.document);
-
-  @override
-  List<Object> get props => super.props..addAll([document]);
-}

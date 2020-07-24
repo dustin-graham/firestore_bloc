@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build Runner" type="BashConfigurationType" factoryName="Bash">
+    <module name="firestore_bloc" />
+    <option name="INTERPRETER_OPTIONS" value="bash" />
+    <option name="INTERPRETER_PATH" value="/usr/bin/env" />
+    <option name="PROJECT_INTERPRETER" value="false" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/packages/firestore_bloc/tool" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/packages/firestore_bloc/tool/gen_source.sh" />
+    <option name="PARAMETERS" value="" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

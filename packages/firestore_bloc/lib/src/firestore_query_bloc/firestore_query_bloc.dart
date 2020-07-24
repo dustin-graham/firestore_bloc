@@ -32,10 +32,6 @@ abstract class FirestoreQueryBloc<T extends FirestoreDocument,
       yield* _mapFirestoreQueryLoadedEventToState(event);
       return;
     }
-    if (event is FirestoreAddedDocumentEvent) {
-      yield* _mapFirestoreAddedDocumentEventToState(event);
-      return;
-    }
   }
 
   @override
@@ -50,10 +46,10 @@ abstract class FirestoreQueryBloc<T extends FirestoreDocument,
   FirestoreQueryLoadingState loading() => FirestoreQueryLoadingState();
 
   FirestoreQueryLoadFailedState loadFailed(error) =>
-      FirestoreQueryLoadFailedState(error);
+      FirestoreQueryState.loadFailed(error: error);
 
   FirestoreQueryLoadedState<T> loaded(List<T> documents) =>
-      FirestoreQueryLoadedState<T>(documents);
+      FirestoreQueryState.loaded(documents: documents);
 
   Stream<FirestoreQueryState> _mapFirestoreQueryLoadFailedEventToState(
       FirestoreQueryLoadFailedEvent event) async* {
@@ -64,11 +60,6 @@ abstract class FirestoreQueryBloc<T extends FirestoreDocument,
   Stream<FirestoreQueryState> _mapFirestoreQueryLoadedEventToState(
       FirestoreQueryLoadedEvent event) async* {
     yield loaded(event.documents);
-  }
-
-  Stream<FirestoreQueryState> _mapFirestoreAddedDocumentEventToState(
-      FirestoreAddedDocumentEvent event) async* {
-    yield FirestoreQueryDocumentAddedState<T>(event.document);
   }
 
   void _subscribeToQuery(StreamLoader streamLoader) {
