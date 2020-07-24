@@ -5,14 +5,14 @@ import 'package:firestore_bloc/src/firestore_document_bloc/firestore_document_st
 import 'package:firestore_bloc/src/repositories/firestore_repository.dart';
 import 'package:firestore_doc/firestore_doc.dart';
 
-class FirestoreDocumentBloc<T extends FirestoreDocument>
+class FirestoreDocumentCubit<T extends FirestoreDocument>
     extends Cubit<FirestoreDocumentState<T>> {
   final FirestoreRepository<T> collectionRepo;
   StreamSubscription _documentSubscription;
   FirestoreDocumentPath documentPath;
   FirestoreCollectionPath parentCollectionPath;
 
-  FirestoreDocumentBloc(this.collectionRepo, this.parentCollectionPath,
+  FirestoreDocumentCubit(this.collectionRepo, this.parentCollectionPath,
       {this.documentPath, FirestoreDocumentState<T> initialState})
       : super(
             initialState ?? FirestoreDocumentUninitializedState(documentPath));

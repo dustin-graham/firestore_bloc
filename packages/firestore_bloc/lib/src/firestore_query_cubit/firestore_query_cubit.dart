@@ -5,7 +5,7 @@ import 'package:firestore_bloc/src/firestore_query_bloc/firestore_query_state.da
 import 'package:firestore_bloc/src/repositories/firestore_repository.dart';
 import 'package:firestore_doc/firestore_doc.dart';
 
-typedef StreamLoader<T extends FirestoreDocument> = Stream<List<T>> Function();
+import '../../firestore_bloc.dart';
 
 abstract class FirestoreQueryCubit<T extends FirestoreDocument,
     R extends FirestoreRepository<T>> extends Cubit<FirestoreQueryState> {
