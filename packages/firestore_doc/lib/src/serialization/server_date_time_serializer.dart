@@ -17,7 +17,7 @@ class ServerDateTimeSerializer extends PrimitiveSerializer<DateTime> {
   @override
   DateTime deserialize(Serializers serializers, Object serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    var microsecondsSinceEpoch = serialized as int;
+    var microsecondsSinceEpoch = (serialized as double).floor();
     return DateTime.fromMicrosecondsSinceEpoch(
       microsecondsSinceEpoch,
       isUtc: true,
