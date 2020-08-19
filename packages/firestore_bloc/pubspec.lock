@@ -42,7 +42,7 @@ packages:
       name: bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.1"
+    version: "6.0.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -229,8 +229,8 @@ packages:
     dependency: "direct main"
     description:
       path: "./packages/firestore_doc"
-      ref: bloc_update
-      resolved-ref: a8df8000671128ff7ed18877b1098b7249364796
+      ref: HEAD
+      resolved-ref: "5640e847d8debf2ac8891b24dff52dc2a1406966"
       url: "https://github.com/dustin-graham/firestore_bloc.git"
     source: git
     version: "0.0.1"
