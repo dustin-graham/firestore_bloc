@@ -8,8 +8,8 @@ import '../firestore_bloc_config.dart';
 extension DocumentSnapshotExtensions on DocumentSnapshot {
   T convert<T>(Serializer<T> serializer) {
     if (exists) {
-      final dataMap = Map<String,dynamic>.of(this.data);
-      dataMap['id'] = documentID;
+      final dataMap = Map<String,dynamic>.of(this.data());
+      dataMap['id'] = id;
       dataMap['referencePath'] = this.reference.path;
       return FirestoreBlocConfig.instance.serializers
           .deserializeWith(serializer, dataMap);

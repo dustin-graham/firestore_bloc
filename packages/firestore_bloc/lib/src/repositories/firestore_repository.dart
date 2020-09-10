@@ -15,16 +15,16 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
   /// Set this if you want a way to manually determine ahead of time the document ID going into the database
   static DocumentIdGenerator documentIdGenerator;
 
-  static Firestore _firestoreInstance;
+  static FirebaseFirestore _firestoreInstance;
 
   /// set this if you have a custom firestore app you need to reference instead
   /// of the default
-  static set firestoreInstance(Firestore instance) {
+  static set firestoreInstance(FirebaseFirestore instance) {
     _firestoreInstance = instance;
   }
 
-  static Firestore get firestoreInstance =>
-      _firestoreInstance ?? Firestore.instance;
+  static FirebaseFirestore get firestoreInstance =>
+      _firestoreInstance ?? FirebaseFirestore.instance;
 
   Serializer<T> get serializer;
 
@@ -42,26 +42,26 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
 
   Stream<List<T>> querySnapshots(Query query) {
     final mapSnapshots = (QuerySnapshot snapshot) {
-      return snapshot.documents
+      return snapshot.docs
           .where((documentSnapshot) =>
               documentSnapshot.data != null &&
-              documentIsValid(documentSnapshot.data))
+              documentIsValid(documentSnapshot.data()))
           .map<T>(deserializeSnapshot)
           .toList();
     };
     final singleFetchStream =
-        Stream.fromFuture(query.getDocuments(source: Source.server));
+        Stream.fromFuture(query.get(GetOptions(source: Source.server)));
     final snapshotsStream = query.snapshots();
     return MergeStream([singleFetchStream, snapshotsStream]).map(mapSnapshots);
   }
 
   Future<T> querySingle(Query query) {
-    return query.limit(1).getDocuments().then((snapshot) {
-      if (snapshot.documents.length == 0) {
+    return query.limit(1).get().then((snapshot) {
+      if (snapshot.docs.length == 0) {
         return null;
       }
 
-      var documentSnapshot = snapshot.documents.first;
+      var documentSnapshot = snapshot.docs.first;
       return documentSnapshot.convert(serializer);
     });
   }
@@ -105,12 +105,12 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
           processMissingFields(serializedDocument, originalSerializedDocument);
 
       await FirestoreRepository.firestoreInstance
-          .document(document.referencePath)
-          .setData(processedUpdate, merge: true);
+          .doc(document.referencePath)
+          .set(processedUpdate, SetOptions(merge: true));
     } else {
       await FirestoreRepository.firestoreInstance
-          .document(document.referencePath)
-          .setData(serializedDocument, merge: merge);
+          .doc(document.referencePath)
+          .set(serializedDocument, SetOptions(merge: merge));
     }
   }
 
@@ -133,7 +133,7 @@ abstract class FirestoreRepository<T extends FirestoreDocument> {
           b.id = existingDocumentId;
         });
         var referencePath = collectionPath.document(existingDocumentId);
-        await referencePath.documentReference.setData(FirestoreBlocConfig
+        await referencePath.documentReference.set(FirestoreBlocConfig
             .instance.serializers
             .serializeWith(serializer, t));
         return t.rebuild((b) {
@@ -160,6 +160,6 @@ extension FirestoreCollectionPathExtensions on FirestoreCollectionPath {
 
 extension FirestoreDocumentPathExtensions on FirestoreDocumentPath {
   DocumentReference get documentReference {
-    return FirestoreRepository.firestoreInstance.document(path);
+    return FirestoreRepository.firestoreInstance.doc(path);
   }
 }
