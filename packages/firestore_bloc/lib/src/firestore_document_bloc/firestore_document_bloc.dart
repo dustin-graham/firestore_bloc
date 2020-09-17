@@ -65,10 +65,6 @@ class FirestoreDocumentBloc<T extends FirestoreDocument>
     );
   }
 
-  FirestoreDocumentUninitializedState<T> uninitialized(
-          FirestoreDocumentPath documentId) =>
-      FirestoreDocumentUninitializedState(documentId);
-
   FirestoreDocumentLoadingState<T> loading(FirestoreDocumentPath documentId) =>
       FirestoreDocumentLoadingState(documentId);
 
