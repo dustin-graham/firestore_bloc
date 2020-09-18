@@ -14,4 +14,13 @@ abstract class FirestoreCollectionCubit<T extends FirestoreDocument,
   void loadAll() {
     super.load(() => collectionRepo.queryAll(collectionPath));
   }
+
+  Future<void> deleteDocument(String documentId) async {
+    try {
+      await collectionRepo.deleteDocument(collectionPath.document(documentId));
+    } catch (e) {
+      print('error deleting document: $e');
+      rethrow;
+    }
+  }
 }
